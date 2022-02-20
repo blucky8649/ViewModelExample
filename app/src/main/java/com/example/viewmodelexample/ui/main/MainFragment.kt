@@ -6,9 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import androidx.databinding.DataBindingUtil
 import com.example.viewmodelexample.R
 import com.example.viewmodelexample.databinding.MainFragmentBinding
+import com.example.viewmodelexample.BR.myViewModel
 
 class MainFragment : Fragment() {
 
@@ -16,8 +17,9 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private var _binding: MainFragmentBinding? = null
-    private val binding get() = _binding!!
+    //private var _binding: MainFragmentBinding? = null
+    //private val binding get() = _binding!!
+    lateinit var binding: MainFragmentBinding
 
     private lateinit var viewModel: MainViewModel
 
@@ -26,15 +28,20 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = MainFragmentBinding.inflate(inflater, container, false)
+        //_binding = MainFragmentBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false)
+        // 프래그먼트가 소멸될 때 바인딩 객체도 소멸되로록 바인딩 객체의 생명주기 소유자를 현재 프래그먼트로 선언
+        binding.lifecycleOwner = this
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        //binding.resultText.text = viewModel.getResult().toString()
 
+        binding.setVariable(myViewModel, viewModel)
+        //binding.resultText.text = viewModel.getResult().toString()
+        /*
         // UI 컨트롤러 내부에 옵저버를 생성한다.
         val resultObserver = Observer<Float> {
             // 현재의 결과값을 반아 resultText에 저장한다.
@@ -54,6 +61,7 @@ class MainFragment : Fragment() {
                 binding.resultText.text = "No Value"
             }
         }
+         */
     }
 
 }
